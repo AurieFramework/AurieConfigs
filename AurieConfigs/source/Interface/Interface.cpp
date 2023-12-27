@@ -69,9 +69,9 @@ void AurieConfigManager::QueryVersion(
 	OUT short& Patch
 )
 {
-	Major = 1;
-	Minor = 0;
-	Patch = 0;
+	Major = AURIE_CONFIGS_MAJOR;
+	Minor = AURIE_CONFIGS_MINOR;
+	Patch = AURIE_CONFIGS_PATCH;
 }
 
 AurieStatus AurieConfigManager::OpenConfig(
@@ -374,6 +374,88 @@ Aurie::AurieStatus AurieConfigManager::WriteNumberArray(
 }
 
 Aurie::AurieStatus AurieConfigManager::WriteStringArray(
+	IN AurieConfig Config,
+	IN std::string_view ValueName, 
+	IN const std::vector<std::string>& Value
+)
+{
+	if (!Config)
+		return AURIE_INVALID_PARAMETER;
+
+	AurieConfigEntry* config_entry = reinterpret_cast<AurieConfigEntry*>(Config);
+	config_entry->m_JsonObject[ValueName] = Value;
+
+	return AURIE_SUCCESS;
+}
+
+Aurie::AurieStatus AurieConfigManager::ReadBoolean(
+	IN AurieConfig Config, 
+	IN std::string_view ValueName, 
+	OUT bool& Value
+)
+{
+	if (!Config)
+		return AURIE_INVALID_PARAMETER;
+
+	AurieConfigEntry* config_entry = reinterpret_cast<AurieConfigEntry*>(Config);
+
+	if (!config_entry->m_JsonObject.contains(ValueName))
+		return AURIE_OBJECT_NOT_FOUND;
+
+	// ReadBoolean does not implement non-boolean handling
+	if (!config_entry->m_JsonObject.at(ValueName).is_boolean())
+		return AURIE_NOT_IMPLEMENTED;
+
+	Value = config_entry->m_JsonObject.at(ValueName).get<bool>();
+	return AURIE_SUCCESS;
+}
+
+Aurie::AurieStatus AurieConfigManager::ReadBooleanArray(
+	IN AurieConfig Config, 
+	IN std::string_view ValueName, 
+	OUT std::vector<bool>& Value
+)
+{
+	if (!Config)
+		return AURIE_INVALID_PARAMETER;
+
+	AurieConfigEntry* config_entry = reinterpret_cast<AurieConfigEntry*>(Config);
+
+	if (!config_entry->m_JsonObject.contains(ValueName))
+		return AURIE_OBJECT_NOT_FOUND;
+
+	// We hope that the array contains strings and only strings
+	if (!config_entry->m_JsonObject.at(ValueName).is_array())
+		return AURIE_NOT_IMPLEMENTED;
+
+	try
+	{
+		Value = config_entry->m_JsonObject.at(ValueName).get<std::vector<bool>>();
+	}
+	catch (...)
+	{
+		return AURIE_NOT_IMPLEMENTED;
+	}
+
+	return AURIE_SUCCESS;
+}
+
+Aurie::AurieStatus AurieConfigManager::WriteBoolean(
+	IN AurieConfig Config, 
+	IN std::string_view ValueName, 
+	IN const bool& Value
+)
+{
+	if (!Config)
+		return AURIE_INVALID_PARAMETER;
+
+	AurieConfigEntry* config_entry = reinterpret_cast<AurieConfigEntry*>(Config);
+	config_entry->m_JsonObject[ValueName] = Value;
+
+	return AURIE_SUCCESS;
+}
+
+Aurie::AurieStatus AurieConfigManager::WriteBooleanArray(
 	IN AurieConfig Config,
 	IN std::string_view ValueName, 
 	IN const std::vector<std::string>& Value

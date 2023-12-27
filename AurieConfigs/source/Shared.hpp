@@ -3,6 +3,18 @@
 
 using AurieConfig = PVOID;
 
+#ifndef AURIE_CONFIGS_MAJOR
+#define AURIE_CONFIGS_MAJOR 1
+#endif // AURIE_CONFIGS_MAJOR
+
+#ifndef AURIE_CONFIGS_MINOR
+#define AURIE_CONFIGS_MINOR 1
+#endif // AURIE_CONFIGS_MINOR
+
+#ifndef AURIE_CONFIGS_PATCH
+#define AURIE_CONFIGS_PATCH 0
+#endif // AURIE_CONFIGS_PATCH
+
 struct AurieConfigInterface : public Aurie::AurieInterfaceBase
 {
 	virtual Aurie::AurieStatus OpenConfig(
@@ -81,6 +93,30 @@ struct AurieConfigInterface : public Aurie::AurieInterfaceBase
 	) = 0;
 
 	virtual Aurie::AurieStatus WriteStringArray(
+		IN AurieConfig Config,
+		IN std::string_view ValueName,
+		IN const std::vector<std::string>& Value
+	) = 0;
+
+	virtual Aurie::AurieStatus ReadBoolean(
+		IN AurieConfig Config,
+		IN std::string_view ValueName,
+		OUT bool& Value
+	) = 0;
+
+	virtual Aurie::AurieStatus ReadBooleanArray(
+		IN AurieConfig Config,
+		IN std::string_view ValueName,
+		OUT std::vector<bool>& Value
+	) = 0;
+
+	virtual Aurie::AurieStatus WriteBoolean(
+		IN AurieConfig Config,
+		IN std::string_view ValueName,
+		IN const bool& Value
+	) = 0;
+
+	virtual Aurie::AurieStatus WriteBooleanArray(
 		IN AurieConfig Config,
 		IN std::string_view ValueName,
 		IN const std::vector<std::string>& Value

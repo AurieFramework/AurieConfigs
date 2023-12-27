@@ -117,4 +117,28 @@ public:
 		IN std::string_view ValueName,
 		IN const std::vector<std::string>& Value
 	) override final;
+
+	virtual Aurie::AurieStatus ReadBoolean(
+		IN AurieConfig Config,
+		IN std::string_view ValueName,
+		OUT bool& Value
+	) override final;
+
+	virtual Aurie::AurieStatus ReadBooleanArray(
+		IN AurieConfig Config,
+		IN std::string_view ValueName,
+		OUT std::vector<bool>& Value
+	) override final;
+
+	virtual Aurie::AurieStatus WriteBoolean(
+		IN AurieConfig Config,
+		IN std::string_view ValueName,
+		IN const bool& Value
+	) override final;
+
+	virtual Aurie::AurieStatus WriteBooleanArray(
+		IN AurieConfig Config,
+		IN std::string_view ValueName,
+		IN const std::vector<std::string>& Value
+	) override final;
 };
